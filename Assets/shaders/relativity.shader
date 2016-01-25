@@ -229,7 +229,7 @@ Shader "Relativity/ColorShift"
 		riw += _playerOffset;
 	
         //Transform the vertex back into local space for the mesh to use it
-		o.pos = mul(_World2Object*unity_Scale.w,riw);
+		o.pos = mul(_World2Object*1.0,riw);
 
 		o.pos2 = mul(_Object2World, o.pos );
 		o.pos2 -= _playerOffset;
@@ -341,7 +341,7 @@ Shader "Relativity/ColorShift"
 		float shift = (1-((x1*i.vr.x + y1*i.vr.y + z1*i.vr.z)/sqrt( x1 * x1 + y1 * y1 + z1 * z1)))/i.svc; 
 		if ( _colorShift == 0) 
 		{
-			shift /= shift;
+			shift = 1.0f;
 		}
 		//Get initial color 
 		float4 data = tex2D (_MainTex, i.uv1).rgba;   
@@ -366,9 +366,9 @@ Shader "Relativity/ColorShift"
 		UVParam.x = 0.02; UVParam.y = UV_START + UV_RANGE*UV; UVParam.z = (float)5;
 		IRParam.x = 0.02; IRParam.y = IR_START + IR_RANGE*IR; IRParam.z = (float)5;
 		
-		float xf = pow((1/shift),3)*getXFromCurve(rParam, shift) + getXFromCurve(gParam,shift) + getXFromCurve(bParam,shift) + getXFromCurve(IRParam,shift) + getXFromCurve(UVParam,shift);
-		float yf = pow((1/shift),3)*getYFromCurve(rParam, shift) + getYFromCurve(gParam,shift) + getYFromCurve(bParam,shift) + getYFromCurve(IRParam,shift) + getYFromCurve(UVParam,shift);
-		float zf = pow((1/shift),3)*getZFromCurve(rParam, shift) + getZFromCurve(gParam,shift) + getZFromCurve(bParam,shift) + getZFromCurve(IRParam,shift) + getZFromCurve(UVParam,shift);
+		float xf = pow((1/shift),3)*(getXFromCurve(rParam, shift) + getXFromCurve(gParam,shift) + getXFromCurve(bParam,shift) + getXFromCurve(IRParam,shift) + getXFromCurve(UVParam,shift));
+		float yf = pow((1/shift),3)*(getYFromCurve(rParam, shift) + getYFromCurve(gParam,shift) + getYFromCurve(bParam,shift) + getYFromCurve(IRParam,shift) + getYFromCurve(UVParam,shift));
+		float zf = pow((1/shift),3)*(getZFromCurve(rParam, shift) + getZFromCurve(gParam,shift) + getZFromCurve(bParam,shift) + getZFromCurve(IRParam,shift) + getZFromCurve(UVParam,shift));
 		
 		float3 rgbFinal = XYZToRGBC(xf,yf,zf);
 		rgbFinal = constrainRGB(rgbFinal.x,rgbFinal.y, rgbFinal.z); //might not be needed

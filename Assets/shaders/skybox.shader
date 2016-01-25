@@ -197,7 +197,7 @@ Shader "Relativity/SkyboxShift" {
 	
 		if(_colorShift == 0)
 		{
-			svc /= svc;
+			svc = 1.0f;
 		}
 		//Get initial color
 		float3 rgb = tex2D (_MainTex, i.uv1).rgb;  
@@ -213,14 +213,14 @@ Shader "Relativity/SkyboxShift" {
 		UVParam.x = 0.1; UVParam.y = UV_START + UV_RANGE*UV; UVParam.z = (float)1;
 		IRParam.x = 0.1; IRParam.y = IR_START + IR_RANGE*IR; IRParam.z = (float)1;
 		
-		float xf = pow((1/svc),3)*getXFromCurve(rParam, svc) + getXFromCurve(gParam,svc) + getXFromCurve(bParam,svc) + getXFromCurve(IRParam,svc) + getXFromCurve(UVParam,svc);
-		float yf = pow((1/svc),3)*getYFromCurve(rParam, svc) + getYFromCurve(gParam,svc) + getYFromCurve(bParam,svc) + getYFromCurve(IRParam,svc) + getYFromCurve(UVParam,svc);
-		float zf = pow((1/svc),3)*getZFromCurve(rParam, svc) + getZFromCurve(gParam,svc) + getZFromCurve(bParam,svc) + getZFromCurve(IRParam,svc) + getZFromCurve(UVParam,svc);
+		float xf = pow((1/svc),3)*(getXFromCurve(rParam, svc) + getXFromCurve(gParam,svc) + getXFromCurve(bParam,svc) + getXFromCurve(IRParam,svc) + getXFromCurve(UVParam,svc));
+		float yf = pow((1/svc),3)*(getYFromCurve(rParam, svc) + getYFromCurve(gParam,svc) + getYFromCurve(bParam,svc) + getYFromCurve(IRParam,svc) + getYFromCurve(UVParam,svc));
+		float zf = pow((1/svc),3)*(getZFromCurve(rParam, svc) + getZFromCurve(gParam,svc) + getZFromCurve(bParam,svc) + getZFromCurve(IRParam,svc) + getZFromCurve(UVParam,svc));
 		
 		float3 rgbFinal = XYZToRGBC(xf,yf,zf);
 		//rgbFinal = constrainRGB(rgbFinal.x,rgbFinal.y, rgbFinal.z);
 
-  		float4x4 temp  = mul(unity_Scale.w*_Object2World, _World2Object);
+  		float4x4 temp  = mul(1.0*_Object2World, _World2Object);
 		float4 temp2 = mul( temp,float4( (float)rgbFinal.x,(float)rgbFinal.y,(float)rgbFinal.z,1));
 		//float4 temp2 =float4( (float)rgbFinal.x,(float)rgbFinal.y,(float)rgbFinal.z,1);
 		return temp2; 
